@@ -1,4 +1,4 @@
-mod utils;
+use pervasives::relative;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     if relative!("stack.yaml")?.exists() {
