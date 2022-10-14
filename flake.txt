@@ -1,0 +1,22 @@
+{
+  description = "Haskell Shell with flakes";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs";
+    flake-utils.url = "github:numtide/flake-utils";
+    snowstorm.url = "git+ssh://git@github.com/rajatsharma/snowstorm.git";
+  };
+
+  outputs = { self, nixpkgs, flake-utils, snowstorm }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      with pkgs;
+      rec {
+        devShells.default = snowstorm.lib.mk{{.Language}}Shell {
+          inherit pkgs;
+          buildInputs = [ haskellPackages.hakyll ];
+        };
+      }
+    );
+}
