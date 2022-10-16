@@ -13,9 +13,8 @@
       in
       with pkgs;
       rec {
-        devShells.default = snowstorm.lib.mk{{.Language}}Shell {
+        devShells.default = snowstorm.lib.mk{{ .Language }}Shell {
           inherit pkgs;
-          buildInputs = [ haskellPackages.hakyll ];
         };
       }
     );

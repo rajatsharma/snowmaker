@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"fmt"
+	"github.com/gobeam/stringy"
 	"os"
 	"path"
 	"text/template"
@@ -35,7 +36,7 @@ func exists(path string) bool {
 var flake string
 
 type Flake struct {
-	language string
+	Language string
 }
 
 func main() {
@@ -72,17 +73,27 @@ func main() {
 	}
 
 	buf := new(bytes.Buffer)
-	tmpl.Execute(buf, Flake{language: language})
+	if err = tmpl.Execute(buf, Flake{Language: stringy.New(language).CamelCase()}); err != nil {
+		panic("unable to create flake.nix")
+	}
 
-	err = os.WriteFile(relativePath("flake.nix"), []byte(buf.String()), 0644)
-
-	if err != nil {
+	if err = os.WriteFile(relativePath("flake.nix"), []byte(buf.String()), 0644); err != nil {
 		panic("unable to write flake.nix")
 	}
 
-	err = os.WriteFile(relativePath(".envrc"), []byte("use flake"), 0644)
+	if err = os.WriteFile(relativePath(".envrc"), []byte("use flake"), 0644); err != nil {
+		panic("unable to write .envrc")
+	}
+
+	gitExclude, err := os.OpenFile(relativePath(".git/info/exclude"), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 
 	if err != nil {
-		panic("unable to write .envrc")
+		panic(err)
+	}
+
+	defer gitExclude.Close()
+
+	if _, err = gitExclude.WriteString("\nflake.nix\nflake.lock\n.envrc"); err != nil {
+		panic(err)
 	}
 }
