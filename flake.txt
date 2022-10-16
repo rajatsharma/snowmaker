@@ -1,5 +1,5 @@
 {
-  description = "Haskell Shell with flakes";
+  description = "{{ .Language }} Shell with flakes";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
