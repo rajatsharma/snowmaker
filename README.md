@@ -3,7 +3,7 @@
 ## Installation
 
 ```shell
-cargo install --git "https://github.com/rajatsharma/snowmaker"
+go install github.com/rajatsharma/snowmaker@latest
 ```
 
 ## Usage
